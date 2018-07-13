@@ -98,6 +98,18 @@
 
         expect(_.flatten(nestedArray)).to.eql([1,2,3,4]);
       });
+
+      it('can flatten nested arrays', function() {
+        var nestedArray = [1, [2], [3, [[[4]]]], [2, 4]];
+
+        expect(_.flatten(nestedArray)).to.eql([1,2,3,4,2,4]);
+      });
+
+      it('can flatten nested arrays', function() {
+        var nestedArray = [1, [2], [3, [[[4]]]], [2, 4], 1];
+
+        expect(_.flatten(nestedArray)).to.eql([1,2,3,4,2,4,1]);
+      });
     });
 
     describe('zip', function() {
@@ -170,6 +182,22 @@
         clock.tick(200);
 
         expect(callback).to.have.been.calledTwice;
+      });
+
+      it('should return a function callable twice in the first 200ms', function() {
+        var fn = _.throttle(callback, 100);
+        fn(); // called
+        setTimeout(fn, 1); 
+        setTimeout(fn, 50);
+        setTimeout(fn, 99); 
+        setTimeout(fn, 100); // called
+        setTimeout(fn, 101); 
+        setTimeout(fn, 150); 
+        setTimeout(fn, 199); 
+        setTimeout(fn, 201); // called
+        clock.tick(202)
+
+        expect(callback).to.have.been.calledThrice;
       });
 
     });
