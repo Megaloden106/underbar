@@ -124,28 +124,15 @@
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
     iterator = iterator || _.identity;
-    var duplicate = [];
-    if (!isSorted) {
-      for (var elem1 of array) {
-        var isUniq = true;
-        for (var elem2 of duplicate) {
-          if (iterator(elem1) === iterator(elem2)) {
-            isUniq = false;
-          }
-        }
-        if (isUniq) {
-          duplicate.push(elem1);
-        }
-      }
-    } else {
-      for (var elem of array) {
-        if (prev !== iterator(elem)) {
-          duplicate.push(elem);
-        }
-        var prev = iterator(elem);
+    var unique = [];
+    var check = [];
+    for (var elem of array) {
+      if (!check.includes(iterator(elem))) {
+        check.push(iterator(elem));
+        unique.push(elem);
       }
     }
-    return duplicate;
+    return unique;
   };
 
 
@@ -222,7 +209,6 @@
         }
       }
     } else {
-      // ...
       if (accumulator === undefined) {
         accumulator = collection[0];
       }
@@ -385,7 +371,8 @@
   // The arguments for the original function are passed after the wait
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
-  _.delay = function(func, wait, ...args) {
+  _.delay = function(func, wait) {
+    var args = Array.prototype.slice.call(arguments, 2)
     return setTimeout(function() {
       return func.apply(null, args);
     }, wait);
